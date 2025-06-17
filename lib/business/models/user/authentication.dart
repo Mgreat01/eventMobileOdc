@@ -1,19 +1,17 @@
-// create model class for authentication name and password with toJson and fromJson methods
 
 class Authentication {
-  final String? name;
+  final String? email;
   final String? password;
 
-  Authentication({this.name, this.password});
+  Authentication({this.email, this.password});
 
-  factory Authentication.fromJson(json) => Authentication(
-        name: json['name'],
-        password: json['password'],
-      );
+  factory Authentication.fromJson(Map<String, dynamic> json) => Authentication(
+    email: json['email'],
+    password: json['password'],
+  );
 
-  Map toJson() => {
-        'name': name,
-        'password': password,
-      };
+  Map<String, dynamic> toJson() => {  // <-- Spécification explicite du type
+    'email': email,
+    'password': password,
+  };
 }
-
