@@ -3,7 +3,9 @@ import 'dart:convert';
 
 import '../../business/models/user/authentication.dart';
 
+import '../../business/models/user/interet.dart';
 import '../../business/models/user/loginReponse.dart';
+import '../../business/models/user/registerRequest.dart';
 import '../../business/models/user/user.dart';
 
 import '../../business/services/user/userNetworkService.dart';
@@ -76,6 +78,106 @@ class UserNetworkServiceImpl extends UserNetworkService {
       throw Exception('Connexion échouée : ${e.toString()}');
     }
   }
+
+
+  @override
+  Future<User> creerCompte(RegisterRequest registerRequest) async {
+    final url = '$baseUrl/register';
+    final req = registerRequest.toJson();
+
+    print('Données d\'inscription envoyées : $req');
+
+    try {
+      final String responseBody = await httpUtils.postData(
+        url,
+        body: req,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      final decodedJson = jsonDecode(responseBody);
+
+      if (decodedJson['error'] != null) {
+        throw Exception(decodedJson['message'] ?? 'Erreur lors de l\'inscription');
+      }
+
+      final loginResponse = LoginResponse.fromJson(decodedJson);
+      print('Compte créé avec succès : ${loginResponse.user.toJson()}');
+      return loginResponse.user;
+    } catch (e) {
+      print('Erreur création de compte : $e');
+      throw Exception('Échec de l\'inscription : ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<User> seDeconnecter() {
+    // TODO: implement seDeconnecter
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Interet>> getInterets() async {
+    final url = '$baseUrl/interet';
+
+    try {
+      final responseBody = await httpUtils.getData(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      final decodedJson = jsonDecode(responseBody);
+      if (decodedJson is List) {
+        return decodedJson.map((e) => Interet.fromJson(e)).toList();
+      } else {
+        throw Exception('Réponse inattendue du serveur');
+      }
+    } catch (e) {
+      print('Erreur lors du chargement des centres d’intérêt : $e');
+      throw Exception('Impossible de charger les centres d’intérêt');
+    }
+  }
+
+  @override
+  Future<bool> verifierOtp({required String email, required String otp}) async {
+    final url = '$baseUrl/verify';
+    final body = {
+      'email': email,
+      'otp': otp,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      //  Vérifie simplement si le code HTTP est 200 (succès)
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        print('Vérification réussie : ${decoded['message']}');
+        return true;
+      } else {
+        final decoded = jsonDecode(response.body);
+        print('Erreur OTP : ${decoded['message']}');
+        return false;
+      }
+    } catch (e) {
+      print('Erreur lors de la vérification OTP : $e');
+      return false;
+    }
+  }
+
+
 }
 
 

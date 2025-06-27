@@ -1,4 +1,5 @@
 
+
 class User {
   int? id;
   String? name;
@@ -9,7 +10,7 @@ class User {
   String? nomOrganis;
 
   // Spécifique au public
-  List<String>? interets;
+  List<int>? interets;
 
   // Optionnel : token d'authentification
   String? token;
@@ -20,19 +21,22 @@ class User {
     this.email,
     this.role,
     this.nomOrganis,
-    this.interets
+    this.interets,
+    this.token
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    final Map<String, dynamic> map = Map<String, dynamic>.from(json);
     return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      role: json['role'],
-      nomOrganis: json['nom_organis'], // Pour l’organisateur
-      interets: json['interets'] != null
-          ? List<String>.from(json['interets'])
-          : null, // Pour le public
+      id: map['id'] as int?,
+      name: map['name'] as String?,
+      email: map['email'] as String?,
+      role: map['role'] as String?,
+      nomOrganis: map['nom_organis'] as String?,
+      interets: map['interets'] != null
+          ? List<int>.from(map['interets'])
+          : null,
+      token: map['token'] as String?,
     );
   }
 

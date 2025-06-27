@@ -10,9 +10,10 @@ class LoginResponse {
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    final userData = json['data'] ?? {};
+    final Map<String, dynamic> map = Map<String, dynamic>.from(json);
+    final userData = Map<String, dynamic>.from(map['data'] ?? {});
     return LoginResponse(
-      message: json['message'] ?? '',
+      message: map['message'] ?? '',
       user: User.fromJson(userData),
     );
   }
