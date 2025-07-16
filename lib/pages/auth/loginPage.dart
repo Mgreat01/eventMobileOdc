@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_template/MonApplication.dart';
+import 'package:odc_mobile_template/pages/register/registerPage.dart';
 
+import '../event/eventPage.dart';
 import 'loginControl.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -73,7 +76,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   children: [
                     const CircleAvatar(
                       radius: 40,
-                      backgroundColor: Color(0xFFE53935),
+                      backgroundColor: Color(0xFF7E57C2),
                       child: Icon(Icons.event, size: 40, color: Colors.white),
                     ),
                     const SizedBox(height: 24),
@@ -119,7 +122,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: Center(
                     child: Text(
                       state.errorMsg!,
-                      style: const TextStyle(color: Colors.red, fontSize: 14),
+                      style: const TextStyle(color: Colors.deepPurple, fontSize: 14),
                     ),
                   ),
                 ),
@@ -238,17 +241,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               _passwordController.text.trim(),
                             );
                             if (success && mounted) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const MonApplication(),
-                                ),
-                              );
+                              context.go('/app/home');
                             }
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE53935),
+                          backgroundColor: const Color(0xFF512DA8),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -305,8 +303,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     Center(
                       child: TextButton(
                         onPressed: () {
-                          // Navigator.pushNamed(context, '/register');
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => RegisterPage(),
+                            ),
+                          );
                         },
+
                         child: RichText(
                           text: TextSpan(
                             text: 'Pas encore de compte ? ',
@@ -317,7 +320,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               TextSpan(
                                 text: 'Créer un compte',
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: const Color(0xFFE53935),
+                                  color: const Color(0xFF7E57C2),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
