@@ -244,7 +244,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         Navigator.pushReplacement(
           context,
             MaterialPageRoute(
-              builder: (_) => LoginPage(),
+              builder: (_) => OtpVerificationPage(email:  _emailController.text.trim()),
             ),
         );
       } else if (mounted) {
