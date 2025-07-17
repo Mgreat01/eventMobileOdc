@@ -51,7 +51,30 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
     }
   }
 
+  @override
+  Future<List<Event>> recupererDerniersEvents(int count) async {
+    final String url = '$baseUrl/events?latest=true&count=$count';
+
+    try {
+      final response = await httpUtils.getData(url);
+
+      final jsonResponse = response is String ? jsonDecode(response) : response;
+
+      if (jsonResponse is Map<String, dynamic> && jsonResponse.containsKey('data')) {
+        List<dynamic> eventData = jsonResponse['data'];
+        print("Derniers $count événements récupérés : $eventData");
+        return eventData.map((event) => Event.fromJson(event)).toList();
+      } else {
+        throw Exception("Réponse inattendue lors de la récupération des événements.");
+      }
+    } catch (e) {
+      print("Erreur lors de la récupération des derniers événements : $e");
+      throw Exception("Échec de récupération des derniers événements.");
+    }
   }
+
+
+}
 
 
 

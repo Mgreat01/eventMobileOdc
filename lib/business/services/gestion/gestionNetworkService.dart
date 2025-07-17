@@ -7,4 +7,5 @@ abstract class GestionNetworkService {
   Future<Article> recupererArticle(int id);
   Future<Event> recuperEventById(int id);
   Future<List<Event>> recupererEvents();
+  Future<List<Event>> recupererDerniersEvents(int count);
 }
