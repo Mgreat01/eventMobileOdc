@@ -1,5 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:odc_mobile_template/pages/auth/loginPage.dart';
+import 'package:odc_mobile_template/pages/event/eventPage.dart';
+import 'package:odc_mobile_template/pages/homeEvent/homeEventPage.dart';
+import 'package:odc_mobile_template/pages/profil/profilPage.dart';
 import 'pages/404/not_found_page.dart';
 import 'pages/intro/appCtrl.dart';
 import 'pages/intro/introPage.dart';
@@ -17,9 +21,19 @@ final routerConfigProvider = Provider<GoRouter>((ref) {
       path: "/app/home",
       name: 'home_page',
       builder: (ctx, state) {
-        return HomePage();
+        return EventPage();
       },
     ),
+    GoRoute(
+      path: "/app/events",
+      name: 'events_page',
+      builder: (ctx, state) => EventPage(),
+    ),
+    GoRoute(
+      path: "/app/profile",
+      name: 'profile_page',
+      builder: (ctx, state) => ProfilPage(), // crée cette page si elle n'existe pas
+    )
   ];
 
   /*
@@ -30,9 +44,14 @@ final routerConfigProvider = Provider<GoRouter>((ref) {
       path: "/public/intro",
       name: 'intro_page',
       builder: (ctx, state) {
-        return IntroPage();
+        return LoginPage();
       },
     ),
+  GoRoute(
+  path: "/app/HomeEvent",
+  name: 'HomeEvent_page',
+  builder: (ctx, state) => HomeEventPage(), // crée cette page si elle n'existe pas
+  )
   ];
 
   /*
@@ -41,7 +60,7 @@ CONFIGURATION  DES ROUTES
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: "/public/intro",
+    initialLocation: "/app/HomeEvent",
     redirect: (context, state) {
       var appState = ref.watch(appCtrlProvider);
       var user = appState.user;
