@@ -52,6 +52,10 @@ class LoginControl extends StateNotifier<LoginState> {
     }
   }
 
+  Future<void> logout() async {
+    await _localService.supprimerUser();
+    state = LoginState();
+  }
 }
 
 
