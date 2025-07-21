@@ -1,5 +1,7 @@
 
 
+import 'interet.dart';
+
 class User {
   int? id;
   String? name;
@@ -10,7 +12,7 @@ class User {
   String? nomOrganis;
 
   // Spécifique au public
-  List<int>? interets;
+  List<Interet>? interets;
 
   // Optionnel : token d'authentification
   String? token;
@@ -34,7 +36,8 @@ class User {
       role: map['role'] as String?,
       nomOrganis: map['nom_organis'] as String?,
       interets: map['interets'] != null
-          ? List<int>.from(map['interets'])
+          ?  List<Interet>.from(
+          json['interets'].map((x) => Interet.fromJson(x)))
           : null,
       token: map['token'] as String?,
     );
@@ -48,7 +51,9 @@ class User {
     };
 
     if (nomOrganis != null) data['nom_organis'] = nomOrganis;
-    if (interets != null) data['interets'] = interets;
+    if (interets != null) {
+      data['interets'] = interets!.map((x) => x.toJson()).toList();
+    }
 
     return data;
   }
