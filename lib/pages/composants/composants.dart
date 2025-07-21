@@ -391,7 +391,6 @@ class CarteEvenementHorizontal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final mediaUrl = event.media?.url;
     final imageUrl = mediaUrl != null
         ? (kIsWeb
@@ -399,92 +398,119 @@ class CarteEvenementHorizontal extends StatelessWidget {
         : 'http://10.252.252.44:8000/$mediaUrl')
         : null;
 
-
-    print(imageUrl);
-    return Container(
+    return SizedBox(
       width: 260,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.deepPurple.shade50,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.deepPurple.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image
-          ClipRRect(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            child: imageUrl != null
-                ? Image.network(
-              imageUrl,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 220,
-                color: Colors.grey[300],
-                child: const Icon(Icons.broken_image,
-                    color: Colors.black26, size: 80),
-              ),
-            )
-                : Container(
-              height: 120,
-              width: double.infinity,
-              color: Colors.deepPurple.shade100,
-              child: const Icon(FontAwesomeIcons.image, color: Colors.white70, size: 40),
-            ),
           ),
-          const SizedBox(height: 8),
-
-          // Titre
-          Text(
-            event.title ?? "Sans titre",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: Colors.deepPurple,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-
-          const SizedBox(height: 6),
-
-          // Date et lieu
-          Row(
-            children: [
-              const Icon(FontAwesomeIcons.calendarAlt, size: 14, color: Colors.grey),
-              const SizedBox(width: 5),
-              Text(
-                event.cycle ?? "Date inconnue",
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          ),
-
-          Row(
-            children: [
-              const Icon(FontAwesomeIcons.mapMarkerAlt, size: 14, color: Colors.grey),
-              const SizedBox(width: 5),
-              Expanded(
-                child: Text(
-                  event.title ?? "Lieu inconnu",
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  overflow: TextOverflow.ellipsis,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image avec ratio 16:9
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: imageUrl != null
+                        ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.broken_image,
+                            color: Colors.black26, size: 40),
+                      ),
+                    )
+                        : Container(
+                      color: Colors.deepPurple.shade50,
+                      child: const Center(
+                        child: Icon(FontAwesomeIcons.image,
+                            color: Colors.white70, size: 32),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+
+                // Titre
+                _buildTextWithIcon(
+                  text: event.title ?? "Sans titre",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.deepPurple,
+                    height: 1.3,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Date
+                _buildInfoRow(
+                  icon: FontAwesomeIcons.calendarAlt,
+                  text: event.cycle ?? "Date inconnue",
+                ),
+                const SizedBox(height: 6),
+
+                // Lieu
+                _buildInfoRow(
+                  icon: FontAwesomeIcons.mapMarkerAlt,
+                  text:event.title ?? "Lieu inconnu", // Fallback sur title si location n'existe pas
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow({required IconData icon, required String text}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Icon(icon, size: 12, color: Colors.grey[600]),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: _buildTextWithIcon(
+            text: text,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[700],
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextWithIcon({required String text, required TextStyle style}) {
+    return Text(
+      text,
+      style: style,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
