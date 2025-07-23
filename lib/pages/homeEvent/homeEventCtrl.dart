@@ -17,10 +17,10 @@ class HomeEventController extends StateNotifier<HomeEventState> {
     state = state.copyWith(isLoading: true);
     try {
       final latest = await gestionNetwork.recupererDerniersEvents(3);
-      final interets = await userNetwork.getInterets();
+      final categories= await gestionNetwork.getCategories();
       state = state.copyWith(
         latestEvents: latest,
-        interets: interets,
+        categories: categories,
         isLoading: false,
       );
     } catch (e) {
@@ -28,6 +28,7 @@ class HomeEventController extends StateNotifier<HomeEventState> {
       state = state.copyWith(isLoading: false);
     }
   }
+
 }
 
 final homeEventControllerProvider =
