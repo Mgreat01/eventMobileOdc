@@ -117,7 +117,7 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
 
             // --- Catégories ---
             const Text(
-              "📂 interets",
+              "📂 categories",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -126,12 +126,12 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
             ),
             const SizedBox(height: 12),
             SizedBox(
-              height: 50,
+              height: 120,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: state.interets?.length ?? 0,
+                itemCount: state.categories?.length ?? 0,
                 itemBuilder: (context, index) {
-                  final cat = state.interets?[index];
+                  final cat = state.categories?[index];
                   return cat != null
                       ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -142,7 +142,7 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
                       border: Border.all(color: Colors.deepPurple),
                     ),
                     child: Text(
-                      cat.nom ?? '',
+                      cat.title ?? '',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.deepPurple,
