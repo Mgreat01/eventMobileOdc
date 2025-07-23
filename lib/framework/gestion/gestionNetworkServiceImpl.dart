@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:odc_mobile_template/business/models/article/event.dart';
 
 import '../../business/models/article/article.dart';
+import '../../business/models/article/category.dart';
 import '../../business/services/gestion/gestionNetworkService.dart';
 import '../../utils/http/HttpUtils.dart';
 
@@ -73,6 +74,97 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
     }
   }
 
+  @override
+  Future<void> favorite(int eventId, String token) async {
+    final url = '$baseUrl/articles/$eventId/favorite';
+    final jsons = {'event_id': eventId};
+
+    try {
+      final response = await httpUtils.postData(
+        url,
+        body: jsons,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("Échec du like: ${response.body}");
+      }
+
+      final decodedJson = jsonDecode(response.body);
+      print("Réponse du serveur : $decodedJson");
+
+    } catch (e) {
+      print("Erreur lors de l'appel à favorite : $e");
+      throw Exception("Erreur lors de l'appel à favorite.");
+    }
+  }
+
+
+
+  @override
+  Future<List<Category>> getCategories() async {
+    final url = '$baseUrl/categories';
+
+    try {
+      final responseBody = await httpUtils.getData(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      final decodedJson = jsonDecode(responseBody);
+
+      if (decodedJson is Map<String, dynamic> && decodedJson.containsKey('data')) {
+        final data = decodedJson['data'];
+        if (data is List) {
+          return data.map((item) => Category.fromJson(item)).toList();
+        } else {
+          throw Exception('Le champ "data" n\'est pas une liste');
+        }
+      } else {
+        throw Exception('Réponse inattendue du serveur');
+      }
+    } catch (e) {
+      print('Erreur lors du chargement des catégories : $e');
+      throw Exception('Impossible de charger les catégories');
+    }
+  }
+
+
+  @override
+  Future<void> subscribe(int eventId, String token) async {
+    final url = '$baseUrl/articles/$eventId/subscribe';
+    final jsons = {'event_id': eventId};
+
+    try {
+      final response = await httpUtils.postData(
+        url,
+        body: jsons,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("Échec de la souscription: ${response.body}");
+      }
+
+      final decodedJson = jsonDecode(response.body);
+      print("Réponse du serveur : $decodedJson");
+
+    } catch (e) {
+      print("Erreur lors de la souscription : $e");
+      throw Exception("Erreur lors de la souscription");
+    }
+  }
 
 }
 
