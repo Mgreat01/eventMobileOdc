@@ -33,7 +33,17 @@ final routerConfigProvider = Provider<GoRouter>((ref) {
       path: "/app/profile",
       name: 'profile_page',
       builder: (ctx, state) => ProfilPage(), // crée cette page si elle n'existe pas
-    )
+    ),
+    GoRoute(
+      path: '/event/:categorieId',
+      name: 'event_page',
+        builder: (context, state) {
+          final categorieIdStr = state.pathParameters['categorieId'];
+          final int? categorieId = int.tryParse(categorieIdStr ?? '');
+          return EventPage(categorieId: categorieId);
+        }
+    ),
+
   ];
 
   /*
