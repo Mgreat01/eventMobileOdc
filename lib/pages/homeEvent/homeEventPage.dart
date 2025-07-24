@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../auth/loginControl.dart';
 import '../composants/composants.dart';
+import '../event/eventPage.dart';
 import 'homeEventCtrl.dart';
 
 class HomeEventPage extends ConsumerStatefulWidget {
@@ -24,6 +27,8 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(homeEventControllerProvider);
+    final loginState = ref.watch(loginControlProvider);
+    final user = loginState.user;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -133,19 +138,28 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
                 itemBuilder: (context, index) {
                   final cat = state.categories?[index];
                   return cat != null
-                      ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple.shade50,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.deepPurple),
-                    ),
-                    child: Text(
-                      cat.title ?? '',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.deepPurple,
+                      ? GestureDetector(
+                    onTap: () {
+                      if (user == null) {
+                        context.go('/public/intro');
+                      } else {
+                        context.go('/event/${cat.id}');
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple.shade50,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.deepPurple),
+                      ),
+                      child: Text(
+                        cat.title ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.deepPurple,
+                        ),
                       ),
                     ),
                   )
@@ -154,6 +168,7 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
                 separatorBuilder: (_, __) => const SizedBox(width: 10),
               ),
             ),
+
             const SizedBox(height: 40),
           ],
         ),

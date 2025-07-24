@@ -7,7 +7,10 @@ import 'eventCtrl.dart';
 import 'eventState.dart';
 
 class EventPage extends ConsumerStatefulWidget {
-  const EventPage({super.key});
+  final int? categorieId;
+
+  const EventPage({super.key, this.categorieId});
+
 
   @override
   ConsumerState<EventPage> createState() => _EventPageState();
@@ -15,6 +18,21 @@ class EventPage extends ConsumerStatefulWidget {
 
 class _EventPageState extends ConsumerState<EventPage> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final controller = ref.read(eventControllerProvider.notifier);
+      if (widget.categorieId != null) {
+        controller.filtrerParCategorie(widget.categorieId!);
+      } else {
+        controller.recupererEvents();
+      }
+    });
+  }
+
 
   @override
   void dispose() {
@@ -70,7 +88,7 @@ class _EventPageState extends ConsumerState<EventPage> {
         onSubmitted: (_) => _onSearch(), // Recherche quand on appuie sur Entrée
         decoration: InputDecoration(
           hintText: 'Rechercher des événements...',
-        //  prefixIcon: const Icon(Icons.search, color: Colors.deepPurple),
+          //  prefixIcon: const Icon(Icons.search, color: Colors.deepPurple),
           filled: true,
           fillColor: Colors.grey[100],
           border: OutlineInputBorder(
