@@ -18,6 +18,15 @@ class SingleEventController extends StateNotifier<SingleEventState> {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  Future<void> favorite(int eventId, String token) async {
+    var response =await gestionNetwork.favorite(eventId,token);
+  }
+
+  Future<void> subscribe(int eventId, String token) async {
+    var response =await gestionNetwork.subscribe(eventId,token);
+  }
+
 }
 
 final singleEventControllerProvider = StateNotifierProvider<SingleEventController, SingleEventState>((ref) {

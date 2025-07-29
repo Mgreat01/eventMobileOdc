@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:odc_mobile_template/pages/singleEvent/singleEventCtrl.dart';
 
+import '../auth/loginControl.dart';
+
 class SingleEventPage extends ConsumerStatefulWidget {
   final int? eventId;
   const SingleEventPage({super.key, required this.eventId});
@@ -194,6 +196,30 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
                     "Description",
                     style: theme.textTheme.titleLarge,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: event.isFavorite ? Colors.red.shade100 : Colors.grey.shade200,
+                        foregroundColor: Colors.black87,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 4,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                      ),
+                      icon: Icon(
+                        event.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: event.isFavorite ? Colors.red : Colors.black54,
+                      ),
+                      label: Text(event.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"),
+                      onPressed: () async {
+                        var loginState = ref.watch(loginControlProvider);
+                        ref.read(singleEventControllerProvider.notifier).favorite(event.id, loginState.user?.token??"");
+                      },
+                    ),
+                  ),
+
                   const SizedBox(height: 8),
                   Text(
                     event.description ?? "Description non disponible",
@@ -238,8 +264,9 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: ElevatedButton(
-          onPressed: () {
-            // Action pour s'inscrire
+          onPressed: () async {
+            var loginState = ref.watch(loginControlProvider);
+            ref.read(singleEventControllerProvider.notifier).subscribe(event!.id, loginState.user?.token??"");
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
