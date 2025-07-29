@@ -6,7 +6,7 @@ import '../../models/article/article.dart';
 abstract class GestionNetworkService {
   Future<List<Article>> recupererArticles();
   Future<Article> recupererArticle(int id);
-  Future<Event> recuperEventById(int id);
+  Future<Event> recuperEventById(int? id);
   Future<List<Event>> recupererEvents();
   Future<List<Event>> recupererDerniersEvents(int count);
   Future<void> favorite(int eventId, String token);

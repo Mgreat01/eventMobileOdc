@@ -31,77 +31,94 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
     final user = loginState.user;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: PreferredSize(preferredSize: Size.fromHeight(100.0), child: navBar()),
+      backgroundColor: Colors.white,
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: navBar(),
+      ),
       body: state.isLoading == true
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
+            // Section Bienvenue
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 24),
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF512DA8), Color(0xFF673AB7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: // Remplacez votre Container "Bienvenue" par :
+              SizedBox(
+                height: 180,
+                child: Stack(
+                  children: [
+                    // Image de fond avec effet parallaxe
+                    Positioned.fill(
+                      child: Image.network(
+                        "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                        fit: BoxFit.cover,
+                        color: Colors.deepPurple.withOpacity(0.7),
+                        colorBlendMode: BlendMode.multiply,
+                      ),
+                    ),
+
+                    // Contenu par-dessus
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Bienvenue sur EventSpot",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10,
+                                  color: Colors.black.withOpacity(0.3),
+                                  offset: Offset(2, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Découvrez les meilleurs événements autour de vous",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.deepPurple.withOpacity(0.35),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    " Bienvenue sur EventSpot",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Découvrez les meilleurs événements autour de vous dès maintenant.",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+              )
             ),
+            const SizedBox(height: 24),
 
-
+            // Section Derniers événements
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   "🕒 Derniers événements",
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
                   ),
                 ),
-                Text(
-                  "Voir tout",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.deepPurpleAccent,
-                    fontWeight: FontWeight.w500,
-                  ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text("Voir tout"),
                 ),
               ],
             ),
@@ -117,23 +134,25 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
                 },
               ),
             ),
+            const SizedBox(height: 24),
 
-            const SizedBox(height: 30),
-
-            // --- Catégories ---
-            const Text(
+            // Section Catégories
+            Text(
               "📂 categories",
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
               ),
             ),
             const SizedBox(height: 12),
             SizedBox(
-              height: 120,
-              child: ListView.separated(
+              height: 120, // Hauteur fixe
+              child: GridView.builder(
                 scrollDirection: Axis.horizontal,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1, // Une seule ligne verticale
+                  mainAxisSpacing: 12, // Espacement entre les éléments
+                  childAspectRatio: 0.75, // Ratio largeur/hauteur des items
+                ),
                 itemCount: state.categories?.length ?? 0,
                 itemBuilder: (context, index) {
                   final cat = state.categories?[index];
@@ -147,33 +166,43 @@ class _HomeEventPageState extends ConsumerState<HomeEventPage> {
                       }
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      alignment: Alignment.center,
+                      width: 100, // Largeur fixe
+                      margin: const EdgeInsets.only(right: 8), // Marge à droite seulement
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.deepPurple.shade50,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.deepPurple),
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[300]!),
                       ),
-                      child: Text(
-                        cat.title ?? '',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.deepPurple,
+                      child: Center(
+                        child: Text(
+                          cat.title ?? '',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
                   )
                       : const SizedBox.shrink();
                 },
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
               ),
             ),
-
-            const SizedBox(height: 40),
+            const SizedBox(height: 24),
           ],
         ),
       ),
-      bottomNavigationBar: BottomBar1(selectedIndex: 1),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/app/HomeEvent'),
+        backgroundColor: Colors.white,
+        elevation: 4,
+        child: const Icon(Icons.home, color: Colors.deepPurple),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: const BottomBar1(selectedIndex: 1),
     );
   }
 }

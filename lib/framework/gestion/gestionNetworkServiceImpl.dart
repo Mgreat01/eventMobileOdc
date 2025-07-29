@@ -30,9 +30,28 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
   }
 
   @override
-  Future<Event> recuperEventById(int id) {
-    // TODO: implement recuperEventById
-    throw UnimplementedError();
+  Future<Event> recuperEventById(int? id) async {
+    final String url = '$baseUrl/events/$id';
+
+    try {
+      final response = await httpUtils.getData(url);
+
+      // Décodage du JSON si nécessaire
+      final jsonResponse = response is String ? jsonDecode(response) : response;
+
+      if (jsonResponse is Map<String, dynamic> && jsonResponse.containsKey('data')) {
+        final eventData = jsonResponse['data'];
+        print("Événement récupéré : $eventData");
+
+        // Utilisation du constructeur fromJson de Event
+        return Event.fromJson(eventData);
+      } else {
+        throw Exception("Réponse inattendue lors de la récupération de l’événement.");
+      }
+    } catch (e) {
+      print("Erreur lors de la récupération de l’événement par ID : $e");
+      throw Exception("Échec de récupération de l’événement.");
+    }
   }
 
   @override

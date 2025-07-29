@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 import '../composants/composants.dart';
 import 'eventCtrl.dart';
@@ -76,6 +77,13 @@ class _EventPageState extends ConsumerState<EventPage> {
         },
       ),
       backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/app/HomeEvent'),
+        backgroundColor: Colors.white,
+        elevation: 4,
+        child: const Icon(Icons.home, color: Colors.deepPurple),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomBar1(selectedIndex: 1),
     );
   }
