@@ -4,6 +4,7 @@ import 'package:odc_mobile_template/pages/auth/loginPage.dart';
 import 'package:odc_mobile_template/pages/event/eventPage.dart';
 import 'package:odc_mobile_template/pages/homeEvent/homeEventPage.dart';
 import 'package:odc_mobile_template/pages/profil/profilPage.dart';
+import 'package:odc_mobile_template/pages/singleEvent/singleEventPage.dart';
 import 'pages/404/not_found_page.dart';
 import 'pages/intro/appCtrl.dart';
 import 'pages/intro/introPage.dart';
@@ -41,6 +42,15 @@ final routerConfigProvider = Provider<GoRouter>((ref) {
           final categorieIdStr = state.pathParameters['categorieId'];
           final int? categorieId = int.tryParse(categorieIdStr ?? '');
           return EventPage(categorieId: categorieId);
+        }
+    ),
+    GoRoute(
+        path: '/events/:eventId',
+        name: 'single_event_page',
+        builder: (context, state) {
+          final eventIdStr = state.pathParameters['eventId'];
+          final int? eventId = int.tryParse(eventIdStr ?? '');
+          return SingleEventPage(eventId: eventId);
         }
     ),
 
