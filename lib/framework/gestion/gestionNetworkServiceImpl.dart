@@ -95,7 +95,7 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
 
   @override
   Future<void> favorite(int eventId, String token) async {
-    final url = '$baseUrl/articles/$eventId/favorite';
+    final url = '$baseUrl/events/$eventId/favorite';
     final jsons = {'event_id': eventId};
 
     try {
@@ -109,18 +109,21 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
         },
       );
 
-      if (response.statusCode != 200) {
-        throw Exception("Échec du like: ${response.body}");
-      }
+      // On suppose que `response` est une String JSON
+      final decodedJson = jsonDecode(response);
 
-      final decodedJson = jsonDecode(response.body);
       print("Réponse du serveur : $decodedJson");
+
+      // Si tu veux accéder au message :
+      final message = decodedJson['data']['message'];
+      print("Message: $message");
 
     } catch (e) {
       print("Erreur lors de l'appel à favorite : $e");
       throw Exception("Erreur lors de l'appel à favorite.");
     }
   }
+
 
 
 
@@ -158,7 +161,7 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
 
   @override
   Future<void> subscribe(int eventId, String token) async {
-    final url = '$baseUrl/articles/$eventId/subscribe';
+    final url = '$baseUrl/events/$eventId/subscribe';
     final jsons = {'event_id': eventId};
 
     try {
@@ -172,16 +175,18 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
         },
       );
 
-      if (response.statusCode != 200) {
-        throw Exception("Échec de la souscription: ${response.body}");
-      }
+      // On suppose que `response` est une String JSON
+      final decodedJson = jsonDecode(response);
 
-      final decodedJson = jsonDecode(response.body);
       print("Réponse du serveur : $decodedJson");
 
+      // Si tu veux accéder au message :
+      final message = decodedJson['data']['message'];
+      print("Message: $message");
+
     } catch (e) {
-      print("Erreur lors de la souscription : $e");
-      throw Exception("Erreur lors de la souscription");
+      print("Erreur lors de l'appel à subscribe : $e");
+      throw Exception("Erreur lors de l'appel à subscribe.");
     }
   }
 
