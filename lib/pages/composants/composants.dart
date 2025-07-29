@@ -177,108 +177,113 @@ class CarteEvent extends ConsumerWidget {
         : 'http://10.252.252.44:8000/$mediaUrl')
         : null;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 100,
+    return GestureDetector(
+      onTap: () {
+        context.go('/events/${event.id}');
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // Important pour éviter l'overflow
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: imageUrl != null
-                  ? Image.network(
-                imageUrl,
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: 100,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Important pour éviter l'overflow
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                child: imageUrl != null
+                    ? Image.network(
+                  imageUrl,
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 180,
+                    color: Colors.grey[100],
+                    child: const Icon(Icons.broken_image,
+                        color: Colors.black26, size: 60),
+                  ),
+                )
+                    : Container(
                   height: 180,
                   color: Colors.grey[100],
-                  child: const Icon(Icons.broken_image,
-                      color: Colors.black26, size: 60),
-                ),
-              )
-                  : Container(
-                height: 180,
-                color: Colors.grey[100],
-                child: const Center(
-                  child: Icon(Icons.image_not_supported,
-                      color: Colors.black26, size: 60),
+                  child: const Center(
+                    child: Icon(Icons.image_not_supported,
+                        color: Colors.black26, size: 60),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Important
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    event.title ?? 'Titre inconnu',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    event.description ?? 'Pas de description disponible.',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(Icons.loop, color: Colors.grey[500], size: 18),
-                      const SizedBox(width: 6),
-                      Flexible( // Utilisez Flexible pour le texte long
-                        child: Text(
-                          "Cycle : ${event.cycle ?? 'Inconnu'}",
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Important
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.title ?? 'Titre inconnu',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                  if (event.categories != null && event.categories!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Wrap(
-                        spacing: 8.0,
-                        runSpacing: 6.0,
-                        children: event.categories!
-                            .map((cat) => Chip(
-                          label: Text(
-                            cat.title ?? 'Catégorie',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      event.description ?? 'Pas de description disponible.',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(Icons.loop, color: Colors.grey[500], size: 18),
+                        const SizedBox(width: 6),
+                        Flexible( // Utilisez Flexible pour le texte long
+                          child: Text(
+                            "Cycle : ${event.cycle ?? 'Inconnu'}",
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[600],
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                          backgroundColor: Colors.grey[100],
-                          labelStyle: const TextStyle(color: Colors.black87),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ))
-                            .toList(),
-                      ),
+                        ),
+                      ],
                     ),
-                ],
+                    if (event.categories != null && event.categories!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Wrap(
+                          spacing: 8.0,
+                          runSpacing: 6.0,
+                          children: event.categories!
+                              .map((cat) => Chip(
+                            label: Text(
+                              cat.title ?? 'Catégorie',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            backgroundColor: Colors.grey[100],
+                            labelStyle: const TextStyle(color: Colors.black87),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ))
+                              .toList(),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
