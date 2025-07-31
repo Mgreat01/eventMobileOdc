@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_template/pages/otp/otpController.dart';
@@ -171,10 +172,11 @@ class CarteEvent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mediaUrl = event.media?.url;
+    final baseUrl = dotenv.env['baseUrl'] ?? '';
     final imageUrl = mediaUrl != null
         ? (kIsWeb
         ? 'http://localhost:8000/$mediaUrl'
-        : 'http://10.252.252.44:8000/$mediaUrl')
+        : '$baseUrl/$mediaUrl')
         : null;
 
     return GestureDetector(
@@ -300,10 +302,11 @@ class CarteEvenementHorizontal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaUrl = event.media?.url;
+    final baseUrl = dotenv.env['baseUrl'] ?? '';
     final imageUrl = mediaUrl != null
         ? (kIsWeb
-        ? 'http://10.252.252.44:8000/$mediaUrl'
-        : 'http://10.252.252.44:8000/$mediaUrl')
+        ? 'http://localhost:8000/$mediaUrl'
+        : '$baseUrl/$mediaUrl')
         : null;
 
     return SizedBox(
