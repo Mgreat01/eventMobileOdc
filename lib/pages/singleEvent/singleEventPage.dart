@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +32,13 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
     final state = ref.watch(singleEventControllerProvider);
     final event = state.event;
     final theme = Theme.of(context);
+    final mediaUrl = event?.media?.url;
+    final baseUrl = dotenv.env['baseUrl'] ?? '';
+    final imageUrl = mediaUrl != null
+        ? (kIsWeb
+        ? 'http://localhost:8000/$mediaUrl'
+        : '$baseUrl/$mediaUrl')
+        : null;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -91,7 +100,7 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
             flexibleSpace: FlexibleSpaceBar(
               background: event.media?.url != null
                   ? Image.network(
-                event.media!.url!,
+                imageUrl!,
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
                   color: Colors.grey[200],
