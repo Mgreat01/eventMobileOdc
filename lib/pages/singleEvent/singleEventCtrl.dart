@@ -8,10 +8,10 @@ class SingleEventController extends StateNotifier<SingleEventState> {
 
   SingleEventController() : super(SingleEventState());
 
-  Future<void> loadEventById(int? id) async {
+  Future<void> loadEventById(int? id, String token) async {
     state = state.copyWith(isLoading: true);
     try {
-      final event = await gestionNetwork.recuperEventById(id);
+      final event = await gestionNetwork.recuperEventById(id,token);
       state = state.copyWith(event: event, isLoading: false);
     } catch (e) {
       print("Erreur de chargement d'événement: $e");
@@ -21,11 +21,22 @@ class SingleEventController extends StateNotifier<SingleEventState> {
 
   Future<void> favorite(int eventId, String token) async {
     var response =await gestionNetwork.favorite(eventId,token);
+
   }
 
   Future<void> subscribe(int eventId, String token) async {
     var response =await gestionNetwork.subscribe(eventId,token);
   }
+
+  void toggleFavoriteBouton(int eventId) {
+    if (state.event != null && state.event!.id == eventId) {
+      final updatedEvent = state.event!.copyWith(
+        isFavorite: !(state.event!.isFavorite ?? false),
+      );
+      state = state.copyWith(event: updatedEvent);
+    }
+  }
+
 
 }
 

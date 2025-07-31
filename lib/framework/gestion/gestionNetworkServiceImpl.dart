@@ -30,11 +30,15 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
   }
 
   @override
-  Future<Event> recuperEventById(int? id) async {
-    final String url = '$baseUrl/events/$id';
+  Future<Event> recuperEventById(int? id, String token) async {
+    final String url = '$baseUrl/events/auth/$id';
 
     try {
-      final response = await httpUtils.getData(url);
+      final response = await httpUtils.getData(url,headers:{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      } );
 
       // Décodage du JSON si nécessaire
       final jsonResponse = response is String ? jsonDecode(response) : response;
@@ -94,7 +98,7 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
   }
 
   @override
-  Future<void> favorite(int eventId, String token) async {
+  Future<int> favorite(int eventId, String token) async {
     final url = '$baseUrl/events/$eventId/favorite';
     final jsons = {'event_id': eventId};
 
@@ -115,8 +119,10 @@ class GestionNetworkServiceImpl implements GestionNetworkService {
       print("Réponse du serveur : $decodedJson");
 
       // Si tu veux accéder au message :
-      final message = decodedJson['data']['message'];
-      print("Message: $message");
+     // final message = decodedJson['data']['message'];
+      final message = decodedJson['data']['etat'];
+      print("etat: $message");
+      return message;
 
     } catch (e) {
       print("Erreur lors de l'appel à favorite : $e");

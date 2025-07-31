@@ -28,6 +28,33 @@ class Event {
     this.isFavorite = false,
     this.isSubscribed = false,
   });
+  Event copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? cycle,
+    List<Category>? categories,
+    User? createdBy,
+    Media? media,
+    String? dateTimeStart,
+    String? dateTimeEnd,
+    bool? isFavorite,
+    bool? isSubscribed,
+  }) {
+    return Event(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      cycle: cycle ?? this.cycle,
+      categories: categories ?? this.categories,
+      createdBy: createdBy ?? this.createdBy,
+      media: media ?? this.media,
+      dateTimeStart: dateTimeStart ?? this.dateTimeStart,
+      dateTimeEnd: dateTimeEnd ?? this.dateTimeEnd,
+      isFavorite: isFavorite ?? this.isFavorite,
+      isSubscribed: isSubscribed ?? this.isSubscribed,
+    );
+  }
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(

@@ -19,7 +19,9 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(singleEventControllerProvider.notifier).loadEventById(widget.eventId);
+      final loginState = ref.watch(loginControlProvider);
+      final token = loginState.user?.token;
+      ref.read(singleEventControllerProvider.notifier).loadEventById(widget.eventId,token!);
     });
   }
 
@@ -40,11 +42,25 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          if (event?.isFavorite ?? false)
+          if (event != null)
             IconButton(
-              icon: const Icon(Icons.favorite, color: Colors.deepPurpleAccent),
-              onPressed: () {},
+              icon: Icon(
+                event.isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: event.isFavorite ? Colors.red : Colors.white,
+              ),
+              onPressed: () {
+                final token = ref.read(loginControlProvider).user?.token ?? "";
+                final user = ref.read(loginControlProvider).user;
+               if(user == null){
+                 context.go('/public/intro');
+               } else {
+                 ref.read(singleEventControllerProvider.notifier).toggleFavoriteBouton(event.id);
+                 ref.read(singleEventControllerProvider.notifier).favorite(event.id, token);
+               }
+              },
             ),
+
+
         ],
       ),
       body: state.isLoading
@@ -196,30 +212,6 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
                     "Description",
                     style: theme.textTheme.titleLarge,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: event.isFavorite ? Colors.red.shade100 : Colors.grey.shade200,
-                        foregroundColor: Colors.black87,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 4,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                      ),
-                      icon: Icon(
-                        event.isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: event.isFavorite ? Colors.red : Colors.black54,
-                      ),
-                      label: Text(event.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"),
-                      onPressed: () async {
-                        var loginState = ref.watch(loginControlProvider);
-                        ref.read(singleEventControllerProvider.notifier).favorite(event.id, loginState.user?.token??"");
-                      },
-                    ),
-                  ),
-
                   const SizedBox(height: 8),
                   Text(
                     event.description ?? "Description non disponible",
