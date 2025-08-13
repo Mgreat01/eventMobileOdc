@@ -60,12 +60,12 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
               onPressed: () {
                 final token = ref.read(loginControlProvider).user?.token ?? "";
                 final user = ref.read(loginControlProvider).user;
-               if(user == null){
-                 context.go('/public/intro');
-               } else {
-                 ref.read(singleEventControllerProvider.notifier).toggleFavoriteBouton(event.id);
-                 ref.read(singleEventControllerProvider.notifier).favorite(event.id, token);
-               }
+                if(user == null){
+                  context.go('/public/intro');
+                } else {
+                  ref.read(singleEventControllerProvider.notifier).toggleFavoriteBouton(event.id);
+                  ref.read(singleEventControllerProvider.notifier).favorite(event.id, token);
+                }
               },
             ),
 
@@ -262,22 +262,45 @@ class _SingleEventPageState extends ConsumerState<SingleEventPage> {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ElevatedButton(
-          onPressed: () async {
-            var loginState = ref.watch(loginControlProvider);
-            ref.read(singleEventControllerProvider.notifier).subscribe(event!.id, loginState.user?.token??"");
-          },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(16),
+          child: ElevatedButton(
+            onPressed: event!.isSubscribed
+                ? null // Désactivé si déjà inscrit
+                : () async {
+              var loginState = ref.watch(loginControlProvider);
+              final token = loginState.user?.token ?? "";
+              if (token.isEmpty) {
+                context.go('/public/intro');
+                return;
+              }
+
+              // Mise à jour immédiate
+              ref.read(singleEventControllerProvider.notifier)
+                  .toggleSubscribeBouton(event.id);
+
+              // Appel API
+              await ref.read(singleEventControllerProvider.notifier)
+                  .subscribe(event.id, token);
+            },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              backgroundColor: event.isSubscribed
+                  ? Colors.grey // Couleur différente si déjà inscrit
+                  : Colors.deepPurpleAccent,
+            ),
+            child: Text(
+              event.isSubscribed
+                  ? "Déjà inscrit"
+                  : "S'inscrire à l'événement",
+              style: const TextStyle(color: Colors.white),
             ),
           ),
-          child: const Text("S'inscrire à l'événement"),
         ),
-      ),
+
     );
   }
 

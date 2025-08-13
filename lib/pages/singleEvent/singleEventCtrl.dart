@@ -38,6 +38,14 @@ class SingleEventController extends StateNotifier<SingleEventState> {
   }
 
 
+  void toggleSubscribeBouton(int eventId) {
+    if (state.event != null && state.event!.id == eventId) {
+      final updatedEvent = state.event!.copyWith(
+        isSubscribed: !(state.event!.isSubscribed ?? false),
+      );
+      state = state.copyWith(event: updatedEvent);
+    }
+  }
 }
 
 final singleEventControllerProvider = StateNotifierProvider<SingleEventController, SingleEventState>((ref) {
