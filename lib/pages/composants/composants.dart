@@ -78,11 +78,7 @@ class BottomBar1 extends ConsumerWidget {
 
     switch (index) {
       case 0:
-        if (user == null) {
-          context.go('/public/intro');
-        } else {
-          context.go('/app/home');
-        }
+        context.go('/app/home');
         break;
       case 1:
         context.go('/app/HomeEvent');
